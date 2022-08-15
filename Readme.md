@@ -6,6 +6,8 @@
 - Go to Add-Ons
 - Click on Install
 - Locate and select the .py script
+- Search for Dicey
+- Mark the checkmark beside the addon name
 - Enjoy!
 
 ## Layout:
