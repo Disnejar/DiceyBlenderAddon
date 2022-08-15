@@ -1,4 +1,4 @@
-#How To Install:
+# How To Install:
 
 - Download the code
 - Run Blender
@@ -8,5 +8,5 @@
 - Locate and select the .py script
 - Enjoy!
 
-#Layout:
+# Layout:
 
