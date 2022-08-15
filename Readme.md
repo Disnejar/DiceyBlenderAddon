@@ -21,3 +21,6 @@
 6. Individual rolls
 7. Added up modifier
 8. Sum and the sum of the modifiers
+
+
+### Disclaimer: Don't worry about an error showing up in the beginning
