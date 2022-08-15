@@ -93,18 +93,10 @@ class DICEY_PT_dice_panel(bpy.types.Panel):
         col.prop(context.scene.dice, "d20")
         
         row = self.layout.row()
-        row.operator('dicey.roll')
+        row.prop(context.scene, "modifier")
         
-
-class DICEY_PT_modifiers_panel(bpy.types.Panel):
-    bl_idname = "DICEY_PT_modifiers_panel"
-    bl_label = "Modifiers"
-    bl_space_type = 'VIEW_3D'
-    bl_region_type = 'UI'
-    bl_category = "Dicey"
-    
-    def draw(self, context):
-        pass
+        row = self.layout.row()
+        row.operator('dicey.roll')
 
     
 class DICEY_PT_results_panel(bpy.types.Panel):
@@ -115,36 +107,84 @@ class DICEY_PT_results_panel(bpy.types.Panel):
     bl_category = "Dicey"
     
     def draw(self, context):
-        lastDie: str = None
+        modifier = context.scene.modifier
+        
+        lastDie = None
+        resultString = ""
+        resultStringMod = ""
         currentResults = []
-        resultString = None
+        sum = 0
+        modSum = 0
+        modDieSum = 0
+        
+        col = self.layout.column(align=True)
+        
         for result in context.scene.results:
             if lastDie == None:
                 lastDie = result.dice
             
             if result.dice != lastDie:
-                resultString = lastDie + ": "
                 
                 for res in currentResults:
                     resultString = resultString + str(res) + ", "
+                    modDieSum = modDieSum + modifier
+                    modSum = modSum + modifier
                 
                 resultString = resultString.removesuffix(", ")
-                row = self.layout.row()
+                
+                row = col.row(align=True)
+                
                 box = row.box()
-                box.label(text=resultString)
+                box.label(text=lastDie + ":")
+                
+                box = row.box()
+                box.scale_x = 2.0
+                box.label(text="["+resultString+"]")
+                
+                box = row.box()
+                box.label(text="+"+str(modDieSum))
                 
                 currentResults = []
+                resultString = ""
+                modDieSum = 0
+                
+            currentValue = result.value
+            
             currentResults.append(result.value)
+            
             lastDie = result.dice
-        resultString = lastDie + ": "
+            
+            sum = sum + result.value
                 
         for res in currentResults:
             resultString = resultString + str(res) + ", "
+            modDieSum = modDieSum + modifier
+            modSum = modSum + modifier
 
         resultString = resultString.removesuffix(", ")
-        row = self.layout.row()
+                
+        row = col.row(align=True)
+        
         box = row.box()
-        box.label(text=resultString)
+        box.label(text=lastDie + ":")
+        
+        box = row.box()
+        box.scale_x = 2.0
+        box.label(text="["+resultString+"]")
+        
+        box = row.box()
+        box.label(text="+"+str(modDieSum))
+        
+        row = self.layout.row(align=True)
+        box = row.box()
+        box.label(text="Sum:")
+        
+        box = row.box()
+        box.scale_x = 2.0
+        box.label(text=str(sum))
+        
+        box = row.box()
+        box.label(text="+" + str(modSum))
 
 
 class DICEY_GT_result(bpy.types.PropertyGroup):
@@ -165,7 +205,8 @@ class DICEY_GT_dice(bpy.types.PropertyGroup):
 
 PROPS = [
     ('dice', bpy.props.PointerProperty(type=DICEY_GT_dice)),
-    ('results', bpy.props.CollectionProperty(type=DICEY_GT_result))
+    ('results', bpy.props.CollectionProperty(type=DICEY_GT_result)),
+    ('modifier', bpy.props.IntProperty(name="Modifier", default=0))
 ]
 
 CLASSES = [
@@ -173,7 +214,6 @@ CLASSES = [
     DICEY_GT_dice,
     DICEY_OT_roll,
     DICEY_PT_dice_panel,
-    DICEY_PT_modifiers_panel,
     DICEY_PT_results_panel
 ]
 
