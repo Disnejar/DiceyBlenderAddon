@@ -10,7 +10,7 @@
 - Mark the checkmark beside the addon name
 - Enjoy!
 
-## Layout:
+## Dicey (Dice roller):
 ![DiceyBlenderAddonTutorial](https://user-images.githubusercontent.com/61537549/184713400-169d5eb6-4afb-4925-917f-a27fb11dc5ed.png)
 
 1. Dicey section in the sidebar of the 3D viewport
