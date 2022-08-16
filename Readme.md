@@ -6,9 +6,11 @@
 - Go to Add-Ons
 - Click on Install
 - Locate and select the .py script
+- Search for Dicey
+- Mark the checkmark beside the addon name
 - Enjoy!
 
-## Layout:
+## Dicey (Dice roller):
 ![DiceyBlenderAddonTutorial](https://user-images.githubusercontent.com/61537549/184713400-169d5eb6-4afb-4925-917f-a27fb11dc5ed.png)
 
 1. Dicey section in the sidebar of the 3D viewport
@@ -19,3 +21,6 @@
 6. Individual rolls
 7. Added up modifier
 8. Sum and the sum of the modifiers
+
+
+### Disclaimer: Don't worry about an error showing up in the beginning
