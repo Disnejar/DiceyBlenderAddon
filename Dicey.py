@@ -67,6 +67,52 @@ class DICEY_OT_roll(bpy.types.Operator):
         
         return {'FINISHED'}
     
+    
+class DICEY_OT_roll_single(bpy.types.Operator):
+    bl_idname = "dicey.roll_single"
+    bl_options = {'REGISTER', 'UNDO'}
+    
+    bl_label = "R"
+    bl_description = "Roll the selected die once"
+    
+    die: bpy.props.StringProperty(
+        name = 'die',
+        default = '0'
+    )
+    
+    def execute(self, context):
+        context.scene.results.clear()
+        
+        bpy.ops.dicey.clear()
+        
+        context.scene.dice[self.die] = 1
+        
+        bpy.ops.dicey.roll()
+        
+        return {'FINISHED'}
+    
+    
+class DICEY_OT_clear(bpy.types.Operator):
+    bl_idname = "dicey.clear"
+    bl_options = {'REGISTER', 'UNDO'}
+    
+    bl_label = "Clear"
+    bl_description = "Clear the selection"
+    
+    def execute(self, context):
+        
+        context.scene.dice.d2 = 0
+        context.scene.dice.d3 = 0
+        context.scene.dice.d4 = 0
+        context.scene.dice.d6 = 0
+        context.scene.dice.d8 = 0
+        context.scene.dice.d10 = 0
+        context.scene.dice.d12 = 0
+        context.scene.dice.d20 = 0
+        context.scene.dice.d100 = 0
+        
+        return {'FINISHED'}
+    
 
 class DICEY_PT_dice_panel(bpy.types.Panel):
     bl_idname = "DICEY_PT_dice_panel"
@@ -77,7 +123,7 @@ class DICEY_PT_dice_panel(bpy.types.Panel):
     
     def draw(self, context):
         
-        row = self.layout.row(align=True)
+        row = self.layout.row()
         
         col = row.column(align=True)
         col.prop(context.scene.dice, "d2")
@@ -87,16 +133,45 @@ class DICEY_PT_dice_panel(bpy.types.Panel):
         col.prop(context.scene.dice, "d100")
         
         col = row.column(align=True)
+        col.ui_units_x = 0.8
+        col.emboss = 'NONE'
+        op = col.operator("dicey.roll_single")
+        op.die="d2"
+        op = col.operator("dicey.roll_single")
+        op.die="d4"
+        op = col.operator("dicey.roll_single")
+        op.die="d8"
+        op = col.operator("dicey.roll_single")
+        op.die="d12"
+        op = col.operator("dicey.roll_single")
+        op.die="d100"
+        
+        col = row.column(align=True)
         col.prop(context.scene.dice, "d3")
         col.prop(context.scene.dice, "d6")
         col.prop(context.scene.dice, "d10")
         col.prop(context.scene.dice, "d20")
+        
+        col = row.column(align=True)
+        col.ui_units_x = 0.8
+        col.emboss = 'NONE'
+        op = col.operator("dicey.roll_single")
+        op.die="d3"
+        op = col.operator("dicey.roll_single")
+        op.die="d6"
+        op = col.operator("dicey.roll_single")
+        op.die="d10"
+        op = col.operator("dicey.roll_single")
+        op.die="d20"
         
         row = self.layout.row()
         row.prop(context.scene, "modifier")
         
         row = self.layout.row()
         row.operator('dicey.roll')
+        
+        row = self.layout.row()
+        row.operator('dicey.clear')
 
     
 class DICEY_PT_results_panel(bpy.types.Panel):
@@ -162,29 +237,31 @@ class DICEY_PT_results_panel(bpy.types.Panel):
             modSum = modSum + modifier
 
         resultString = resultString.removesuffix(", ")
-                
-        row = col.row(align=True)
         
-        box = row.box()
-        box.label(text=lastDie + ":")
-        
-        box = row.box()
-        box.scale_x = 2.0
-        box.label(text="["+resultString+"]")
-        
-        box = row.box()
-        box.label(text="+"+str(modDieSum))
-        
-        row = self.layout.row(align=True)
-        box = row.box()
-        box.label(text="Sum:")
-        
-        box = row.box()
-        box.scale_x = 2.0
-        box.label(text=str(sum))
-        
-        box = row.box()
-        box.label(text="+" + str(modSum))
+        if sum != 0:
+                    
+            row = col.row(align=True)
+            
+            box = row.box()
+            box.label(text=lastDie + ":")
+            
+            box = row.box()
+            box.scale_x = 2.0
+            box.label(text="["+resultString+"]")
+            
+            box = row.box()
+            box.label(text="+"+str(modDieSum))
+            
+            row = self.layout.row(align=True)
+            box = row.box()
+            box.label(text="Sum:")
+            
+            box = row.box()
+            box.scale_x = 2.0
+            box.label(text=str(sum))
+            
+            box = row.box()
+            box.label(text="+" + str(modSum))
 
 
 class DICEY_GT_result(bpy.types.PropertyGroup):
@@ -213,6 +290,8 @@ CLASSES = [
     DICEY_GT_result,
     DICEY_GT_dice,
     DICEY_OT_roll,
+    DICEY_OT_clear,
+    DICEY_OT_roll_single,
     DICEY_PT_dice_panel,
     DICEY_PT_results_panel
 ]
